@@ -6,9 +6,25 @@ version: 2.1
 orbs:
   firebase-deploy: azdevs/firebase-deploy@1.0.0
 jobs:
+
+  test-job:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+
+      # Cache to enable faster future jobs
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # Run tests
+      - run: npm run test
   build:
     docker:
-      - image: 'circleci/node:10-browsers'
+      - image: 'circleci/node:10'
     steps:
       - checkout
       - restore_cache:
@@ -18,10 +34,9 @@ jobs:
           key: 'v1-yarn-{{ checksum "yarn.lock" }}'
           paths:
             - ./node_modules
-      - run: yarn test
       - run: yarn build
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: ~/repo
           paths:
             - dist
             - firebase.json
@@ -34,14 +49,16 @@ jobs:
       - image: 'circleci/node:10'
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: ~/repo
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
           alias: staging
 workflows:
   build-and-deploy:
     jobs:
+      - test-job
       - build
       - deploy:
           requires:
+            - test-job
             - build
