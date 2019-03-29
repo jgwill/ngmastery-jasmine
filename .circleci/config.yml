@@ -22,16 +22,23 @@ jobs:
 
       # Run tests
       - run: yarn test
-  build:
-    
+  build:    
     docker:
       - image: 'circleci/node:10'
     steps:
       - checkout
       - run: yarn install
       - run: yarn build
+      - restore_cache:
+          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
+      - run: yarn install
+      - save_cache:
+          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
+          paths:
+            - ./node_modules
+      - run: yarn build
       - persist_to_workspace:
-          root: ~/repo
+          root: /tmp/workspace
           paths:
             - dist
             - firebase.json
@@ -44,7 +51,7 @@ jobs:
       - image: 'circleci/node:10'
     steps:
       - attach_workspace:
-          at: ~/repo
+          at: /tmp/workspace
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
           alias: staging
