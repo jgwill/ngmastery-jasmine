@@ -4,36 +4,44 @@
 #
 version: 2.1
 orbs:
-  firebase-deploy: azdevs/firebase-deploy@1.0.0 
+  firebase-deploy: azdevs/firebase-deploy@1.0.0
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:10-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+      - image: 'circleci/node:10-browsers'
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
       - run: yarn install
-
       - save_cache:
+          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
+            - ./node_modules
       - run: yarn test
+      - run: yarn build
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - dist
+            - firebase.json
+            - .firebaserc
+            - firestore.rules
+            - firestore.indexes.json
+            - functions
+  deploy:
+    docker:
+      - image: 'circleci/node:10'
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - firebase-deploy/deploy:
+          token: $FIREBASE_TOKEN
+          alias: staging
+workflows:
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build

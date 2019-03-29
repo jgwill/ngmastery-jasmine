@@ -10,6 +10,13 @@
 * Signed up using GitHub
 * Setted up a CI for this project
 
+#### Firebase
+```bash
+firebase login:ci
+ tou7e9u8oeg7ucoeucaoehuoeu/1
+Example: firebase deploy --token "$FIREBASE_TOKEN"
+```
+https://ngmastery-jasmine.firebaseapp.com
 
 #### .circleci/config.yml
 * Notice the node:10-browsers image necessary for testing loading the app in browser

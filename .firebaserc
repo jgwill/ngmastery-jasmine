@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "ngmastery-jasmine"
+    "default": "ngmastery-jasmine",
+    "staging": "ngmastery-jasmine"
   }
 }
