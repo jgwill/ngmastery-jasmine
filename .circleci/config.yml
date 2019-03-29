@@ -23,6 +23,7 @@ jobs:
       # Run tests
       - run: yarn test
   build:
+    
     docker:
       - image: 'circleci/node:10'
     steps:
@@ -50,6 +51,8 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
+      - test-job
+      - build
       - deploy:
           requires:
             - test-job
