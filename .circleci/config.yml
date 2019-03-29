@@ -27,6 +27,7 @@ jobs:
       - image: 'circleci/node:10'
     steps:
       - checkout
+      - run: mkdir -p -m 777 /tmp/workspace
       - run: yarn install
       - run: yarn build
       - restore_cache:
