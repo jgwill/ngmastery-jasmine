@@ -21,19 +21,13 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # Run tests
-      - run: npm run test
+      - run: yarn test
   build:
     docker:
       - image: 'circleci/node:10'
     steps:
       - checkout
-      - restore_cache:
-          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
       - run: yarn install
-      - save_cache:
-          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
-          paths:
-            - ./node_modules
       - run: yarn build
       - persist_to_workspace:
           root: ~/repo
@@ -56,8 +50,6 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - test-job
-      - build
       - deploy:
           requires:
             - test-job
