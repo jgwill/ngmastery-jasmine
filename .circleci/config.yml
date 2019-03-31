@@ -63,7 +63,7 @@ jobs:
           token: $FIREBASE_TOKEN
           alias: default
 workflows:
-  build-and-deploy:
+  producing-flow:
     jobs:
       - test-job
       - build:
