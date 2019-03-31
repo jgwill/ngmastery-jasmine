@@ -39,7 +39,6 @@ jobs:
       - run: cp -r dist /tmp/workspace/dist
       - run: cp -r firebase.json /tmp/workspace/
       - run: cp -r .firebaserc /tmp/workspace/
-      - run: cp -r firestore.rules /tmp/workspace/
       - run: cp -r functions /tmp/workspace/
       - persist_to_workspace:
           root: /tmp/workspace
