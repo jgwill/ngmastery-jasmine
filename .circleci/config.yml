@@ -52,7 +52,7 @@ jobs:
       - image: 'circleci/node:10'
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: ./
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
           alias: staging
