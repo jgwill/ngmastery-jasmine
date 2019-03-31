@@ -36,6 +36,8 @@ jobs:
           paths:
             - ./node_modules
       - run: yarn build
+      # Build the Firebase Function
+      - run: cd functions && yarn && npm run build
       - run: cp -r dist /tmp/workspace/dist
       - run: cp -r firebase.json /tmp/workspace/
       - run: cp -r .firebaserc /tmp/workspace/
