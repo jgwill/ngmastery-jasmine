@@ -35,6 +35,7 @@ jobs:
           key: 'v1-yarn-{{ checksum "yarn.lock" }}'
           paths:
             - ./node_modules
+      - run: pwd
       - run: yarn build
       # Build the Firebase Function
       - run: cd functions && yarn && npm run build
@@ -55,9 +56,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
+      - run: pwd
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
-          alias: staging
+          alias: default
 workflows:
   build-and-deploy:
     jobs:
