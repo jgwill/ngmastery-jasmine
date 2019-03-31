@@ -28,8 +28,6 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p -m 777 /tmp/workspace
-      - run: yarn install
-      - run: yarn build
       - restore_cache:
           key: 'v1-yarn-{{ checksum "yarn.lock" }}'
       - run: yarn install
@@ -38,21 +36,24 @@ jobs:
           paths:
             - ./node_modules
       - run: yarn build
+      - run: cp -r dist /tmp/workspace/dist
+      - run: cp -r firebase.json /tmp/workspace/
+      - run: cp -r .firebaserc /tmp/workspace/
+      - run: cp -r firestore.rules /tmp/workspace/
+      - run: cp -r functions /tmp/workspace/
       - persist_to_workspace:
-          root: ./
+          root: /tmp/workspace
           paths:
             - dist
             - firebase.json
             - .firebaserc
-            - firestore.rules
-            - firestore.indexes.json
             - functions
   deploy:
     docker:
       - image: 'circleci/node:10'
     steps:
       - attach_workspace:
-          at: ./
+          at: /tmp/workspace
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
           alias: staging
@@ -60,7 +61,9 @@ workflows:
   build-and-deploy:
     jobs:
       - test-job
-      - build
+      - build:
+          requires:
+            - test-job
       - deploy:
           requires:
             - test-job
