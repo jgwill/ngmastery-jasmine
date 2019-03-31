@@ -11,3 +11,7 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 export const helloWorld2 = functions.https.onRequest((request, response) => {
  response.send("Hello from Firebase!");
 });
+
+export const helloWorld3 = functions.https.onRequest((request, response) => {
+ response.send("Hello from Firebase!");
+});
