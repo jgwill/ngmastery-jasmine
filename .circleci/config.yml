@@ -43,6 +43,7 @@ jobs:
       - run: cp -r firebase.json /tmp/workspace/
       - run: cp -r .firebaserc /tmp/workspace/
       - run: cp -r functions /tmp/workspace/
+      - run: ls /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -57,6 +58,7 @@ jobs:
       - attach_workspace:
           at: ./
       - run: pwd
+      - run: ls ./
       - firebase-deploy/deploy:
           token: $FIREBASE_TOKEN
           alias: default
