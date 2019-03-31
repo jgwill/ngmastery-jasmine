@@ -31,7 +31,8 @@ describe('AppComponent', () => {
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
+    const app = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ngmastery-jasmine!');
+    expect(compiled.querySelector('#title').textContent).toContain( app.title );
   });
 });
